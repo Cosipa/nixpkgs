@@ -4,7 +4,6 @@
   fetchFromGitHub,
   gnome-shell,
   sassc,
-  gnome-themes-extra,
   unstableGitUpdater,
   colorVariants ? [ ],
   sizeVariants ? [ ],
@@ -83,7 +82,6 @@ lib.checkListOfEnum "${pname}: colorVariants" colorVariantList colorVariants lib
       gnome-shell
       sassc
     ];
-    buildInputs = [ gnome-themes-extra ];
 
     dontBuild = true;
 
@@ -91,6 +89,13 @@ lib.checkListOfEnum "${pname}: colorVariants" colorVariantList colorVariants lib
 
     postPatch = ''
       patchShebangs themes/install.sh
+
+      sed -i \
+        -e '/gtkrc\.sh/d' \
+        -e '/# GTK2 Themes/d' \
+        -e '/"''${THEME_DIR}\/gtk-2.0/d' \
+        -e '/make_gtkrc /d' \
+        themes/install.sh
     '';
 
     installPhase = ''
@@ -122,4 +127,3 @@ lib.checkListOfEnum "${pname}: colorVariants" colorVariantList colorVariants lib
       platforms = lib.platforms.unix;
     };
   }
-  
